@@ -11,7 +11,7 @@
 
                     <div class="card-body">
                         <form method="POST" action="{{ route('user.update', $user->id) }}">
-                          @method('put')
+                            @method('put')
                             @csrf
 
                             <div class="form-group m-3 row">
@@ -20,7 +20,7 @@
                                 <div class="col-sm-6">
                                     <input type="name" name="name"
                                         class="form-control @error('name') is-invalid @enderror"
-                                        value="{{  old('name') ?? $user->name }}">
+                                        value="{{ old('name') ?? $user->name }}">
                                     @error('name')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -44,38 +44,41 @@
                                 <div class="col-sm-6">
                                     <input type="password" name="password"
                                         class="form-control @error('price') is-invalid @enderror"
-                                        value="{{ old('password') ?? $user->password  }}">
+                                        value="{{ old('password') ?? $user->password }}">
                                     @error('password')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
                             <div class="form-group m-3 row">
-                              <label for="password" class="col-sm-6 col-form-label">Password <small
-                                      class="text-danger">*</small></label>
-                              <div class="col-sm-6  ">
-                                <div class="form-check">
-                                  <input class="form-check-input" value=0 type="radio" name="role" id="flexRadioDefault2" checked>
-                                  <label class="form-check-label" for="flexRadioDefault2">
-                                    Admin User
-                                  </label>
+                                <label for="password" class="col-sm-6 col-form-label">Password <small
+                                        class="text-danger">*</small></label>
+                                <div class="col-sm-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" value="0" type="radio" name="role"
+                                            id="flexRadioDefault1" {{ old('role', $user->role) == 0 ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            Admin User
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" value="1" type="radio" name="role"
+                                            id="flexRadioDefault2" {{ old('role', $user->role) == 1 ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                            Agent User
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" value="2" type="radio" name="role"
+                                            id="flexRadioDefault3" {{ old('role', $user->role) == 2 ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="flexRadioDefault3">
+                                            Regular User
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="form-check">
-                                  <input class="form-check-input" value=1 type="radio" name="role" id="flexRadioDefault1">
-                                  <label class="form-check-label" for="flexRadioDefault1">
-                                    Agent User
-                                  </label>
-                                </div>
-                                <div class="form-check">
-                                  <input class="form-check-input" value=2 type="radio" name="role" id="flexRadioDefault2" checked>
-                                  <label class="form-check-label" for="flexRadioDefault2">
-                                    Regular User
-                                  </label>
-                                </div>
-                              </div>
-                          </div>
-                            
-                            
+                            </div>
+
+
                             <div class="form-group m-3 row">
                                 <div class="text-center mx-auto">
                                     <a href="{{ route('user.index') }}" class="btn btn-outline-dark">
