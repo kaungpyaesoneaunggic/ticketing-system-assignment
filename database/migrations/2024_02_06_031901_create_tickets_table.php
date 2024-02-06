@@ -18,10 +18,22 @@ class CreateTicketsTable extends Migration
             $table->string('title');
             $table->string('description');
             $table->enum('priority', ['low', 'medium', 'high']);
-            
-            $table->enum('status', ['open', 'closed']);
+            $table->unsignedBigInteger('signed_agent_id');
+            $table->enum('status', ['open', 'closed','pending']);
             $table->timestamps();
+
+            $table->foreign('signed_agent_id')->references('id')->on('users')->onDelete('cascade');
         });
+
+        Schema::table('category_tickets', function (Blueprint $table) {
+            $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
+        });
+
+        Schema::table('label_ticket', function (Blueprint $table) {
+            $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
+        });
+
+
     }
 
     /**
@@ -31,6 +43,8 @@ class CreateTicketsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('label_ticket');
+        Schema::dropIfExists('category_ticket');
         Schema::dropIfExists('tickets');
     }
 }
