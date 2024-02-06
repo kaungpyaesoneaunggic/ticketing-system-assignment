@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\CheckAdminRole;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,7 +12,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(CheckRole::class);
+        $this->middleware(CheckAdminRole::class);
     }
 
     /**
@@ -41,17 +42,16 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
         //
         
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = Hash::make($request->password);
+        $user->password = encrypt($request->password);
         $user->role = $request->role;
         $user->save();
         return redirect()->route("user.index")->with("success", "Item Successfully Created");
@@ -85,17 +85,16 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
         //
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = Hash::make($request->password);
+        $user->password = encrypt($request->password);
         $user->role = $request->role;
         $user->update();
         return redirect()->route("user.index")->with("update", "User Update Successfully");
@@ -114,7 +113,8 @@ class UserController extends Controller
         $user= User::find($id);
         if($user){
             $user->delete();
-            return redirect()->route('user.index')->with("delete",'User Deleted Sucessfully');
+            return  redirect()->route('user.index')->with("delete",'User Deleted Sucessfully');
         }
+        return redirect()->route('user.index')->with("delete",'User Delete Not success');
     }
 }

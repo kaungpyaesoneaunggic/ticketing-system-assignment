@@ -26,8 +26,8 @@
 <link rel="stylesheet" href="{{ asset("plugins/daterangepicker/daterangepicker.css")}}">
 <!-- summernote -->
 <link rel="stylesheet" href="{{ asset("plugins/summernote/summernote-bs4.min.css")}}">
-
-  <link href="{{ asset('fontawesome/css/all.min.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="{{asset('css/index.css')}}">
+<link href="{{ asset('fontawesome/css/all.min.css') }}" rel="stylesheet">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -37,7 +37,7 @@
   </div>
  
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light custom-nav">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -73,7 +73,7 @@
           <img src={{ asset("dist/img/user2-160x160.jpg")}} class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-        {{-- <a href="#" class="d-block">{{ Auth::user()->name }}</a> --}}
+        <a href="#" class="d-block">{{ Auth::user()->name }}</a>
         </div>
       </div>
 
@@ -92,17 +92,25 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
           <li class="nav-item menu-open">
-          {{-- <li class="nav-item">
-            <a href="{{ route('category.create') }}" class="nav-link">
-              <i class="nav-icon fas fa-add"></i>
-              <p>
-                Create User
-              </p>
-            </a>
-          </li> --}}
+            @if(Auth::user()->role != 0)
+            <li class="nav-item">
+                <a href="{{ route('ticket.index') }}" class="nav-link">
+                    <i class="nav-icon fas fa-ticket-alt"></i>
+                    <p>
+                        Ticket List
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('ticket.create') }}" class="nav-link">
+                    <i class="nav-icon fas fa-ticket-alt"></i>
+                    <p>
+                        Ticket Create
+                    </p>
+                </a>
+            </li>
+            @else
           <li class="nav-item">
             <a href="{{ route('user.index') }}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
@@ -120,25 +128,50 @@
             </a>
           </li>
           <br>
-          
-          
+          <li class="nav-item">
+            <a href="{{ route('category.index') }}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Category List
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('category.create') }}" class="nav-link">
+              <i class="nav-icon fas fa-add"></i>
+              <p>
+                Category Create
+              </p>
+            </a>
+          </li>
+          <br>
+          <li class="nav-item">
+            <a href="{{ route('label.index') }}" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Label List
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ route('label.create') }}" class="nav-link">
+              <i class="nav-icon fas fa-add"></i>
+              <p>
+                Label Create
+              </p>
+            </a>
+          </li>
+          @endif
         </ul>
       </nav>
-      <!-- /.sidebar-menu -->
     </div>
-    <!-- /.sidebar -->
   </aside>
-
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-        <div class="row mb-2">
-          @yield('content')
-    </div>
-    <!-- /.content-header -->
-
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
+  {{-- I want this to have vertical scroll when the content get bigger No horizontal scroll --}}
+  <div class="content-wrapper d-flex flex-column" style="overflow-y: auto; overflow-x:hidden;">
+    <div class="row mb-2 flex-grow-1">
+        @yield('content')
+    </div>  
+</div>
  @extends('dashboard.footer')
 </body>
 </html>

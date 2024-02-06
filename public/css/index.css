@@ -1,0 +1,22 @@
+
+#custom-nav, #custom-footer {
+      position: fixed;
+      width: 100%;
+      z-index: 1000; 
+  }
+  #custom-nav {
+      top: 0;
+      padding: 1000px;
+  }
+  #custom-footer {
+      bottom: 0;
+  }
+  /* Styles for the main content area */
+  main {
+      margin-top: 60px; /* Adjust based on header height */
+      margin-bottom: 60px; /* Adjust based on footer height */
+      padding: 20px;
+      overflow-y: auto; /* Add vertical scroll if content exceeds viewport */
+      position: relative;
+      z-index: 1;
+  }

@@ -38,19 +38,25 @@
                                 </div>
                             </div>
                             <div class="form-group m-3 row">
-                                <label for="password" class="col-sm-6 col-form-label">Password <small
-                                        class="text-danger">*</small></label>
+                                <label for="password" class="col-sm-6 col-form-label">Password <small class="text-danger">*</small></label>
                                 <div class="col-sm-6">
-                                    <input type="password" name="password"
-                                        class="form-control @error('price') is-invalid @enderror"
-                                        value="{{ old('password') }}">
+                                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" value="{{ old('password') }}">
                                     @error('password')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
                             <div class="form-group m-3 row">
-                              <label for="password" class="col-sm-6 col-form-label">Password <small
+                                <label for="password_confirmation" class="col-sm-6 col-form-label">Confirm Password <small class="text-danger">*</small></label>
+                                <div class="col-sm-6">
+                                    <input type="password" name="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror"  value="{{ old('password_confirmation') }}">
+                                    @error('password_confirmation')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group m-3 row">
+                              <label for="role" class="col-sm-6 col-form-label">Role <small
                                       class="text-danger">*</small></label>
                               <div class="col-sm-6  ">
                                 <div class="form-check">

@@ -13,7 +13,6 @@
                         <form method="POST" action="{{ route('user.update', $user->id) }}">
                             @method('put')
                             @csrf
-
                             <div class="form-group m-3 row">
                                 <label for="name" class="col-sm-6 col-form-label">User Name <small
                                         class="text-danger">*</small></label>
@@ -41,17 +40,34 @@
                             <div class="form-group m-3 row">
                                 <label for="password" class="col-sm-6 col-form-label">Password <small
                                         class="text-danger">*</small></label>
-                                <div class="col-sm-6">
-                                    <input type="password" name="password"
-                                        class="form-control @error('price') is-invalid @enderror"
-                                        value="{{ old('password') ?? $user->password }}">
+                                <div class="col-sm-6 input-group">
+                                    <input type="password" name="password" id="password"
+                                        class="form-control @error('password') is-invalid @enderror"
+                                        value="{{ old('password') ?? decrypt($user->password) }}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-eye" id="togglePassword"></i>
+                                        </span>
+                                    </div>
                                     @error('password')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
                             <div class="form-group m-3 row">
-                                <label for="password" class="col-sm-6 col-form-label">Password <small
+                                <label for="password_confirmation" class="col-sm-6 col-form-label">Confirm Password <small
+                                        class="text-danger">*</small></label>
+                                <div class="col-sm-6 input-group">
+                                    <input type="password" name="password_confirmation" id="password_confirmation"
+                                        class="form-control @error('password_confirmation') is-invalid @enderror"
+                                        value="{{ old('password_confirmation') ?? decrypt($user->password) }}">
+                                    @error('password_confirmation')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group m-3 row">
+                                <label for="password" class="col-sm-6 col-form-label">Role <small
                                         class="text-danger">*</small></label>
                                 <div class="col-sm-6">
                                     <div class="form-check">
@@ -75,10 +91,11 @@
                                             Regular User
                                         </label>
                                     </div>
+                                    @error('role')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
-
-
                             <div class="form-group m-3 row">
                                 <div class="text-center mx-auto">
                                     <a href="{{ route('user.index') }}" class="btn btn-outline-dark">
@@ -94,4 +111,18 @@
             </div>
         </div>
     </div>
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+        const password_confirmation = document.querySelector('#password_confirmation');
+
+        togglePassword.addEventListener('click', function(e) {
+            // toggle the type attribute
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            password_confirmation.setAttribute('type', type);
+            // toggle the eye icon
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
 @endsection

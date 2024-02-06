@@ -16,10 +16,10 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'Admin',
-            'email' =>'admin@gmail.com',
-            'role'=>'0',
-            'password' => Hash::make('Admin123456'),
+            'name' => 'sampleuser',
+            'email' =>'sameuser@gmail.com',
+            'role'=>'2',
+            'password' => Hash::make('123456'),
             'remember_token' => Str::random(10),
         ];
     }

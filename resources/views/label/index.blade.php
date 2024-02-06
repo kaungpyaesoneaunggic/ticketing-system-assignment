@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header text-center">
-                    <h3>User List</h3>
+                    <h3>Label List</h3>
                     @if(session('success'))
                         <div class="alert alert-success alert-dismissible">
                             {{ session('success') }}
@@ -32,39 +32,25 @@
                           $num=1
                         @endphp
                         
-                        <tr>
+                        <tr class="text-center">
                           <th>#</th>
                           <th>ID</th>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>PW</th>
-                          <th>Role</th>
-                          <th>Action</th>
+                          <th>label Name</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
-                        @foreach ($users as $user)
+                        @foreach ($labels as $label)
                         <tr class="text-center">
                           <th>{{ $num++ }}</th>
-                          <th scope="row">id - {{ $user->id }}</td>
-                          <td>{{ $user->name }}</td>
-                          <td>{{ $user->email }}</td>
-                          <td class="text-truncate">{{ \Illuminate\Support\Str::limit($user->password, 10) }}</td>
+                          <th scope="row">id - {{ $label->id }}</td>
+                          <td>{{ $label->name }}</td>
                           <td>
-                            @if($user->role == 0)
-                                Admin
-                            @elseif($user->role == 1)
-                                Agent
-                            @else
-                                Regular
-                            @endif
-                        </td>
-                          <td>
-                            <a type="button" href="{{ route('user.edit',$user->id) }}" class="btn btn-outline-warning btn-sm"><i class="fa fa-pencil"></i></a>
-                            <form id="deleteForm{{ $user->id }}" action="{{ route('user.destroy', $user->id) }}" method="post" class="d-inline-block">
+                            <a type="button"  href="{{ route('label.edit',$label->id) }}"  class="btn btn-outline-warning btn-sm"><i class="fa fa-pencil"></i></a>
+                            <form id="deleteForm{{ $label->id }}" action="{{ route('label.destroy', $label->id) }}" method="post" class="d-inline-block">
                               @method('delete')
                               @csrf
-                              <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDelete('{{ $user->id }}')"><i class="fa fa-trash"></i></button>
+                              <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDelete('{{ $label->id }}')"><i class="fa fa-trash"></i></button>
                           </form>
                         </td>
                           </tr>
@@ -77,13 +63,13 @@
     </div>
 </div>
 <script>
-  function confirmDelete(userId) {
+  function confirmDelete(labelId) {
         var result = confirm("Are you sure you want to delete?");
         if (result) {
-            // If user clicks OK, submit the form with the corresponding userId
-            document.getElementById('deleteForm' + userId).submit();
+            // If label clicks OK, submit the form with the corresponding userId
+            document.getElementById('deleteForm' + labelId).submit();
         } else {
-            // If user clicks Cancel, do nothing
+            // If label clicks Cancel, do nothing
         }
     }
   setTimeout(function() {
