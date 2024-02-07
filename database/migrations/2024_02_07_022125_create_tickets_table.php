@@ -15,25 +15,20 @@ class CreateTicketsTable extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('title');
             $table->string('description');
             $table->enum('priority', ['low', 'medium', 'high']);
-            $table->unsignedBigInteger('signed_agent_id');
             $table->enum('status', ['open', 'closed','pending']);
+            $table->unsignedBigInteger('agent_id')->default(1);
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('agent_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->foreign('signed_agent_id')->references('id')->on('users')->onDelete('cascade');
+            // label is stored in label_ticket_table
+            // categorry is stored in category_ticekt_table
+            // image is also stored in image_ticket_table
         });
-
-        Schema::table('category_tickets', function (Blueprint $table) {
-            $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
-        });
-
-        Schema::table('label_ticket', function (Blueprint $table) {
-            $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
-        });
-
-
     }
 
     /**
@@ -43,8 +38,6 @@ class CreateTicketsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('label_ticket');
-        Schema::dropIfExists('category_ticket');
         Schema::dropIfExists('tickets');
     }
 }

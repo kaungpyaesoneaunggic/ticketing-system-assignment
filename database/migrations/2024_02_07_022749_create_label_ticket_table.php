@@ -14,9 +14,15 @@ class CreateLabelTicketTable extends Migration
     public function up()
     {
         Schema::create('label_ticket', function (Blueprint $table) {
-            $table->foreignId('ticket_id')->constrained()->onDelete('cascade');
-            $table->foreignId('label_id')->constrained()->onDelete('cascade');
-            $table->primary(['ticket_id', 'label_id']);
+            $table->id();
+            $table->unsignedBigInteger('ticket_id');
+            $table->unsignedBigInteger('label_id');
+
+            // Define foreign keys
+            $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');
+            $table->foreign('label_id')->references('id')->on('labels')->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 

@@ -6,13 +6,13 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header text-center">
-                        <h3>Create ticket</h3>
+                        <h3>Edit ticket</h3>
                     </div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('ticket.store') }}" enctype="multipart/form-data">
-                            @csrf
-                            
+                        <form method="POST" action="{{ route('ticket.update',$ticket->id) }}" enctype="multipart/form-data">
+                          @method('put')
+                          @csrf
                             {{-- Title Input --}}
                             <div class="form-group m-3 row">
                                 <label for="title" class="col-sm-6 col-form-label">Title <small
@@ -20,7 +20,7 @@
                                 <div class="col-sm-6">
                                     <input type="name" name="title"
                                         class="form-control @error('title') is-invalid @enderror"
-                                        value="{{ old('title') }}">
+                                        value="{{ old('title') ?? $ticket->title}}">
                                     @error('title')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -33,7 +33,7 @@
                                 <div class="col-sm-6">
                                     <input type="name" name="description"
                                         class="form-control @error('description') is-invalid @enderror"
-                                        value="{{ old('description') }}">
+                                        value="{{ old('description') ?? $ticket->description}}">
                                     @error('description')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -44,14 +44,33 @@
                             <div class="form-group m-3 row">
                                 <label for="priority" class="col-sm-6 col-form-label">Priority<small class="text-danger">*</small></label>
                                 <div class="col-sm-6">
-                                <select type="priority" name="priority" class="form-control">
-                                    <option value="low">Low</option>
+                                <select type="priority" name="priority" class="form-control" >
+                                    {{-- <option value="low">Low</option>
                                     <option value="medium">Mdeium</option>
-                                    <option value="high">High</option>
+                                    <option value="high">High</option> --}}
+                                    <option value="low" {{ $ticket->priority == 'low' ? 'selected' : '' }}>Low</option>
+                                    <option value="medium" {{ $ticket->priority == 'medium' ? 'selected' : '' }}>Medium</option>
+                                    <option value="high" {{ $ticket->priority == 'high' ? 'selected' : '' }}>High</option>
                                 </select>
                                 </div>
                             </div>
 
+                            {{-- Status Input --}}
+                            <div class="form-group m-3 row">
+                                <label for="status" class="col-sm-6 col-form-label">Status<small class="text-danger">*</small></label>
+                                <div class="col-sm-6">
+                                {{-- <select type="status" name="status" class="form-control">
+                                    <option value="open">Open</option>
+                                    <option value="closed">Closed</option>
+                                    <option value="pending">Pending</option>
+                                </select> --}}
+                                <select name="status" class="form-control">
+                                  <option value="open" {{ $ticket->status == 'open' ? 'selected' : '' }}>Open</option>
+                                  <option value="closed" {{ $ticket->status == 'closed' ? 'selected' : '' }}>Closed</option>
+                                  <option value="pending" {{ $ticket->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                              </select>
+                              </div>
+                            </div>
                             {{-- category input --}}
                             <div class="form-group m-3 row">
                                 <label for="categories" class="col-sm-6 col-form-label">Categories<small class="text-danger">*</small></label>
@@ -81,7 +100,18 @@
                                 @endforeach
                                 </div>
                             </div>
-
+                            
+                            <div class="form-group m-3 row">
+                              <label for="status" class="col-sm-6 col-form-label">Assigened Agent<small class="text-danger">*</small></label>
+                              <div class="col-sm-6">
+                              <select type="status" name="agent_id" class="form-control">
+                                  <option value='0'>-None-</option>
+                                  @foreach ($agents as $agent)
+                                  <option value='{{ $agent->id }}'>{{ $agent->name }}</option>
+                                  @endforeach
+                              </select>
+                            </div>
+                          </div>
 
                             {{-- images input --}}
                             <div class="form-group m-3 row">

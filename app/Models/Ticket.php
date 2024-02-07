@@ -8,23 +8,22 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket extends Model
 {
     use HasFactory;
-
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'category_ticket', 'ticket_id', 'category_id');
-    }
-
-    public function category(){
-        return $this->belongsTo(Category::class);
-        //return $this->belongsTo(Category::class,"category_name","name");
+        return $this->belongsToMany(Category::class);
     }
 
     public function labels()
     {
-        return $this->belongsToMany(label::class, 'label_ticket', 'ticket_id', 'label_id');
+        return $this->belongsToMany(Label::class);
     }
-
-
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
 }
-

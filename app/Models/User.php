@@ -23,10 +23,6 @@ class User extends Authenticatable
         'password',
         'role'
     ];
-    public function item(){
-        return $this->hasOne(Ticket::class);
-        //return $this->has(Item::class,'category_name', 'name');
-    }
 
     /**
      * The attributes that should be hidden for serialization.

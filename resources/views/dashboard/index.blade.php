@@ -44,6 +44,9 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
     </ul>
+    @php
+      $user=Auth::user()
+    @endphp
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
@@ -73,7 +76,7 @@
           <img src={{ asset("dist/img/user2-160x160.jpg")}} class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-        <a href="#" class="d-block">{{ Auth::user()->name }}</a>
+        <a href="#" class="d-block">{{$user->name }}</a>
         </div>
       </div>
 
@@ -93,7 +96,6 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item menu-open">
-            @if(Auth::user()->role != 0)
             <li class="nav-item">
                 <a href="{{ route('ticket.index') }}" class="nav-link">
                     <i class="nav-icon fas fa-ticket-alt"></i>
@@ -102,15 +104,18 @@
                     </p>
                 </a>
             </li>
+            @if ($user->role!=1)
             <li class="nav-item">
-                <a href="{{ route('ticket.create') }}" class="nav-link">
-                    <i class="nav-icon fas fa-ticket-alt"></i>
-                    <p>
-                        Ticket Create
-                    </p>
-                </a>
-            </li>
-            @else
+              <a href="{{ route('ticket.create') }}" class="nav-link">
+                  <i class="nav-icon fas fa-ticket-alt"></i>
+                  <p>
+                      Ticket Create
+                  </p>
+              </a>
+          </li>
+            @endif
+            @if($user->role == 0)
+            <br>
           <li class="nav-item">
             <a href="{{ route('user.index') }}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>

@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
+use App\Models\Category;
+use App\Models\Label;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class TicketController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,6 +24,25 @@ class TicketController extends Controller
     public function index()
     {
         //
+        $user = Auth::user();
+        if ($user->role == 0) {
+            $tickets = Ticket::all();
+        } else if ($user->role == 1) {
+            $tickets = Ticket::where('agent_id', $user->id)->get();
+        } else {
+            $tickets = Ticket::where('user_id',  $user->id)->get();
+        }
+        $ticketCategoryIds = $tickets->mapWithKeys(function ($ticket) {
+            return [$ticket->id => $ticket->categories->pluck('id')->toArray()];
+        });
+        $ticketLabelIds = $tickets->mapWithKeys(function ($ticket) {
+            return [$ticket->id => $ticket->labels->pluck('id')->toArray()];
+        });
+        $ticketImages = $tickets->mapWithKeys(function ($ticket) {
+            return [$ticket->id => $ticket->images->pluck('image')->toArray()];
+        });
+
+        return view('ticket.index', compact('tickets', 'ticketCategoryIds', 'ticketLabelIds', 'ticketImages'));
     }
 
     /**
@@ -26,7 +53,9 @@ class TicketController extends Controller
     public function create()
     {
         //
-        return view('ticket.create');
+        $labels = Label::all();
+        $categories = Category::all();
+        return view('ticket.create', compact('labels', 'categories'));
     }
 
     /**
@@ -38,6 +67,34 @@ class TicketController extends Controller
     public function store(StoreTicketRequest $request)
     {
         //
+        $ticket = new Ticket();
+        $ticket->user_id = Auth::user()->id;
+        $ticket->title = $request->title;
+        $ticket->description = $request->description;
+        $ticket->priority = $request->priority;
+        $ticket->status = 'open';
+        $ticket->save();
+        // Attach categories if provided
+        if ($request->has('category_ids')) {
+            $ticket->categories()->attach($request->category_ids);
+        }
+
+        // Attach labels if provided
+        if ($request->has('label_ids')) {
+            $ticket->labels()->attach($request->label_ids);
+        }
+        if ($request->hasFile('images')) {
+            $images = $request->file('images');
+            foreach ($images as $image) {
+                $newImageName = "gallery_" . uniqid() . "." . $image->extension();
+                $image->storeAs('public/gallery', $newImageName);
+                $ticket->images()->create([
+                    'ticket_id' => $request->id,
+                    'image' => $newImageName
+                ]);
+            }
+        }
+        return redirect()->route('ticket.index')->with('success', 'Ticket Created Successfully');
     }
 
     /**
@@ -59,7 +116,13 @@ class TicketController extends Controller
      */
     public function edit(Ticket $ticket)
     {
-        //
+        if (Auth::user()->role != 1 && Auth::user()->role != 2) {
+            return redirect()->route('home')->with('error', 'You do not have permission to access this page.');
+        }
+        $labels = Label::all();
+        $categories = Category::all();
+        $agents = User::where('role', '1')->get(); //1 means agent
+        return view('ticket.edit', compact('ticket', 'labels', 'categories', 'agents'));
     }
 
     /**
@@ -71,7 +134,38 @@ class TicketController extends Controller
      */
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
-        //
+        // Update the existing ticket
+        $ticket->title = $request->title;
+        $ticket->description = $request->description;
+        $ticket->priority = $request->priority;
+        $ticket->status = $request->status;
+        $ticket->agent_id = $request->agent_id;
+        $ticket->update();
+
+        // Attach categories if provided
+        if ($request->has('category_ids')) {
+            $ticket->categories()->sync($request->category_ids);
+        }
+
+        // Attach labels if provided
+        if ($request->has('label_ids')) {
+            $ticket->labels()->sync($request->label_ids);
+        }
+
+        // Handle images
+        if ($request->hasFile('images')) {
+            $images = $request->file('images');
+            foreach ($images as $image) {
+                $newImageName = "gallery_" . uniqid() . "." . $image->extension();
+                $image->storeAs('public/gallery', $newImageName);
+                // Create a new image record related to the ticket
+                $ticket->images()->create([
+                    'image' => $newImageName,
+                ]);
+            }
+        }
+
+        return redirect()->route('ticket.index')->with('success', 'Ticket updated successfully');
     }
 
     /**

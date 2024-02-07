@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Middleware\CheckAdminRole;
-use App\Http\Middleware\CheckRole;
-use App\Models\label;
-use App\Http\Requests\StorelabelRequest;
-use App\Http\Requests\UpdatelabelRequest;
+use App\Models\Label;
+use App\Http\Requests\StoreLabelRequest;
+use App\Http\Requests\UpdateLabelRequest;
 
 class LabelController extends Controller
 {
@@ -23,7 +22,7 @@ class LabelController extends Controller
     public function index()
     {
         //
-        $labels= label::all();
+        $labels= Label::all();
         return view ('label.index',compact('labels'));
     }
 
@@ -41,13 +40,13 @@ class LabelController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorelabelRequest  $request
+     * @param  \App\Http\Requests\StoreLabelRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorelabelRequest $request)
+    public function store(StoreLabelRequest $request)
     {
         //
-        $label= new label();
+        $label= new Label();
         $label->name= $request->name;
         $label->save();
         return redirect()->route('label.index')->with('success', 'Stored Successfully');
@@ -56,10 +55,10 @@ class LabelController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\label  $label
+     * @param  \App\Models\Label  $label
      * @return \Illuminate\Http\Response
      */
-    public function show(label $label)
+    public function show(Label $label)
     {
         //
     }
@@ -67,10 +66,10 @@ class LabelController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\label  $label
+     * @param  \App\Models\Label  $label
      * @return \Illuminate\Http\Response
      */
-    public function edit(label $label)
+    public function edit(Label $label)
     {
         //
         return view('label.edit',compact('label'));
@@ -79,11 +78,11 @@ class LabelController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatelabelRequest  $request
-     * @param  \App\Models\label  $label
+     * @param  \App\Http\Requests\UpdateLabelRequest  $request
+     * @param  \App\Models\Label  $label
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatelabelRequest $request, label $label)
+    public function update(UpdateLabelRequest $request, Label $label)
     {
         //
         $label->name=$request->name;
@@ -94,10 +93,10 @@ class LabelController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\label  $label
+     * @param  \App\Models\Label  $label
      * @return \Illuminate\Http\Response
      */
-    public function destroy(label $label)
+    public function destroy(Label $label)
     {
         //
         if($label){
