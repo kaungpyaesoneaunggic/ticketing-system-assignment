@@ -71,14 +71,23 @@
                             @endforeach
                           </td>
                           <td>
-                            @foreach ($ticketImages[$ticket->id] as $image)
-                            <img src="{{ asset('storage/gallery/' . $image) }}" width="80px" height="40px" style="object-fit: contain">
-                            @endforeach
+                            <div class="image-wrapper">
+                              @foreach ($ticketImages[$ticket->id] as $image)
+                                  <img class="small-image" src="{{ asset('storage/gallery/' . $image) }}" alt="Ticket Image">
+                              @endforeach
+                              <div class="modal">
+                                  @foreach ($ticketImages[$ticket->id] as $image)
+                                      <img class="modal-content" src="{{ asset('storage/gallery/' . $image) }}" alt="Enlarged Image">
+                                  @endforeach
+                              </div>
+                          </div>
                           </td>
                           <td>
-                            <a type="button" class="btn btn-outline-warning btn-sm"><i class="fa-solid fa-comment"></i></a>
+                            <a type="button" href="{{ route('comment.index',$ticket->id) }}" class="btn btn-outline-warning btn-sm"><i class="fa-solid fa-comment"></i></a>
                             @if (Auth::user()->role != 2)
-                            <a type="button" href='{{ route('ticket.edit',$ticket->id) }}' class="btn btn-outline-warning btn-sm"><i class="fa-solid fa-edit"></i></a>
+                            <a type="button" href='{{ route('ticket.edit',$ticket->id) }}' class="btn btn-outline-warning btn-sm">
+                              <i class="fa-solid fa-edit"></i>
+                            </a>
                             @endif
                           </td>
                         </tr>
@@ -94,6 +103,23 @@
   setTimeout(function() {
         $(".alert").alert('close');
     }, 4000);
-  
+    document.querySelectorAll('.image-wrapper').forEach(function(wrapper) {
+    let timer = null; 
+    wrapper.addEventListener('mouseenter', function() {
+        if (timer === null) {
+            timer = setTimeout(() => {
+                this.querySelector('.modal').style.display = 'block';
+            }, 1500);
+        }
+    });
+
+    wrapper.addEventListener('mouseleave', function() {
+        clearTimeout(timer);
+        timer = null;
+        this.querySelector('.modal').style.display = 'none';
+    });
+});
+
+
 </script>
 @endsection

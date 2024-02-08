@@ -13,6 +13,7 @@
                         <form method="POST" action="{{ route('ticket.update',$ticket->id) }}" enctype="multipart/form-data">
                           @method('put')
                           @csrf
+                          
                             {{-- Title Input --}}
                             <div class="form-group m-3 row">
                                 <label for="title" class="col-sm-6 col-form-label">Title <small
@@ -77,7 +78,7 @@
                                 <div class="col-lg-8 d-flex flex-row">
                                     @foreach ($categories as $category)
                                     <div class="form-check m-1">
-                                        <input class="form-check-input" name="category_ids[]" type="checkbox" value="{{ $category->id }}" id="category{{ $category->id }}">
+                                        <input class="form-check-input" name="category_ids[]" type="checkbox" value="{{ $category->id }}" id="category{{ $category->id }}" {{ in_array($category->id, $selectedCategoryIds) ? 'checked' : '' }}>
                                         <label class="form-check-label" for="category{{ $category->id }}">
                                             {{ $category->name }}
                                         </label>
@@ -92,7 +93,7 @@
                                 <div class="col-lg-8 d-flex flex-row">
                                     @foreach ($labels as $label)
                                     <div class="form-check m-1">
-                                        <input class="form-check-input" name="label_ids[]" type="checkbox" value="{{ $label->id }}" id="label{{ $label->id }}">
+                                        <input class="form-check-input" name="label_ids[]" type="checkbox" value="{{ $label->id }}" id="label{{ $label->id }}" {{ in_array($label->id, $selectedLabelIds) ? 'checked' : '' }}>
                                         <label class="form-check-label" for="category{{ $label->id }}">
                                             {{ $label->name }}
                                         </label>
@@ -124,16 +125,34 @@
                             <div class="form-group m-3 row">
                                 <div class="text-center mx-auto">
                                     <a href="{{ route('ticket.index') }}" class="btn btn-outline-dark">
-                                        <i class="fa fa-arrow-left fa-lg"></i>
+                                        <i class="fa fa-arrow-left fa-lg py-2"></i>
                                     </a>
-                                    <button type="submit" class="btn btn-outline-primary">Create</button>
+                                    <button type="submit" class="btn btn-outline-primary">Submit</button>
                                 </div>
+                                @if (Auth::user()->role == 0)
+                                    <form id="deleteForm{{ $ticket->id }}" action="{{ route('ticket.destroy', $ticket->id) }}" method="post" class="d-inline-block">
+                                        @method('delete')
+                                        @csrf
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="confirmDelete('{{ $ticket->id }}')"><i class="fa fa-trash p-1"></i></button>
+                                    </form>
+                                @endif
                             </div>
-
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        function confirmDelete(ticketId) {
+            var result = confirm("Are you sure you want to delete?");
+            if (result) {
+                // If user clicks OK, submit the form with the corresponding userId
+                document.getElementById('deleteForm' + ticketId).submit();
+            } else {
+                // If user clicks Cancel, do nothing
+            }
+        }
+    </script>
 @endsection
+

@@ -1,0 +1,40 @@
+/* CSS for image hover effect and modal */
+.image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.small-image {
+  width: 80px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%; /* Adjust the width as needed */
+  max-width: 800px; /* Maximum width */
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  z-index: 9999; /* Ensure modal appears above other content */
+  opacity: 0; /* Initially hide the modal */
+  transition: opacity 0.3s ease; /* Add transition effect */
+}
+
+.modal-content {
+  width: 100%;
+  height: auto;
+}
+
+.image-wrapper:hover .modal {
+  display: block;
+  opacity: 1; /* Fade in the modal */
+}

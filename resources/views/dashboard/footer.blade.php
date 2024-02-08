@@ -1,4 +1,6 @@
 <footer class="main-footer">
+  @yield('comment_section')
+
   <strong>Copyright &copy; 2014-2021.</strong>
   All rights reserved.
   

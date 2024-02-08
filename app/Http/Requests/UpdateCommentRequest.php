@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTicketRequest extends FormRequest
+class UpdateCommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class StoreTicketRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -25,10 +25,6 @@ class StoreTicketRequest extends FormRequest
     {
         return [
             //
-            'user_id'=>'required',
-            'title'=>'required',
-            'description'=>'required',
-            'agent_id'=>'required'
         ];
     }
 }

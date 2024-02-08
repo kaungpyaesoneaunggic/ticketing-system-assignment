@@ -28,6 +28,7 @@
 <link rel="stylesheet" href="{{ asset("plugins/summernote/summernote-bs4.min.css")}}">
 <link rel="stylesheet" href="{{asset('css/index.css')}}">
 <link href="{{ asset('fontawesome/css/all.min.css') }}" rel="stylesheet">
+<link href="{{ asset('css/hovers.css') }}" rel="stylesheet">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -171,12 +172,13 @@
       </nav>
     </div>
   </aside>
-  {{-- I want this to have vertical scroll when the content get bigger No horizontal scroll --}}
-  <div class="content-wrapper d-flex flex-column" style="overflow-y: auto; overflow-x:hidden;">
-    <div class="row mb-2 flex-grow-1">
+  <div class="content-wrapper" style="overflow-y: auto; overflow-x:hidden;">
+    {{-- Dear GPT I want this row to take all the height that is free --}}
+    <div class="row mb-2 d-flex">
         @yield('content')
     </div>  
 </div>
  @extends('dashboard.footer')
+ 
 </body>
 </html>

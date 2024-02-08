@@ -8,7 +8,9 @@ use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Category;
 use App\Models\Label;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class TicketController extends Controller
 {
@@ -53,9 +55,15 @@ class TicketController extends Controller
     public function create()
     {
         //
-        $labels = Label::all();
-        $categories = Category::all();
-        return view('ticket.create', compact('labels', 'categories'));
+        try{
+            $this->authorize('create');
+            $labels = Label::all();
+            $categories = Category::all();
+            return view('ticket.create', compact('labels', 'categories'));
+        }catch(AuthorizationException $e){
+            return $e;
+        }
+        
     }
 
     /**
@@ -116,13 +124,17 @@ class TicketController extends Controller
      */
     public function edit(Ticket $ticket)
     {
-        if (Auth::user()->role != 1 && Auth::user()->role != 2) {
-            return redirect()->route('home')->with('error', 'You do not have permission to access this page.');
+        try {
+            $this->authorize('edit', $ticket);
+            $labels = Label::all();
+            $categories = Category::all();
+            $agents = User::where('role', '1')->get(); //1 means agent
+            $selectedCategoryIds = $ticket->categories->pluck('id')->toArray();
+            $selectedLabelIds = $ticket->labels->pluck('id')->toArray();
+            return view('ticket.edit', compact('ticket', 'labels', 'categories', 'agents','selectedCategoryIds','selectedLabelIds'));
+        }catch(AuthorizationException $e){
+            return $e;
         }
-        $labels = Label::all();
-        $categories = Category::all();
-        $agents = User::where('role', '1')->get(); //1 means agent
-        return view('ticket.edit', compact('ticket', 'labels', 'categories', 'agents'));
     }
 
     /**
@@ -177,5 +189,24 @@ class TicketController extends Controller
     public function destroy(Ticket $ticket)
     {
         //
+        try{
+            $this->authorize('delete', $ticket);
+            if($ticket){
+                foreach ($ticket->images as $image) {
+                    $path = 'public/gallery/' . $image->image;
+                    Storage::delete($path);
+                }
+                $ticket->images()->delete();
+                $ticket->labels()->detach();
+                $ticket->categories()->detach();
+                $ticket->delete();
+                return redirect()->route('ticket.index')->with("delete","deleted successfully");
+            }
+            return redirect()->route('ticket.index')->with('delete','Delete wasnt success');
+            
+        }catch(AuthorizationException $e){
+            return $e;
+        }
+        
     }
 }

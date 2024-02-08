@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTicketRequest extends FormRequest
+class StoreCommentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +25,7 @@ class StoreTicketRequest extends FormRequest
     {
         return [
             //
-            'user_id'=>'required',
-            'title'=>'required',
-            'description'=>'required',
-            'agent_id'=>'required'
+            'comment_body'=>'required|min:25'
         ];
     }
 }

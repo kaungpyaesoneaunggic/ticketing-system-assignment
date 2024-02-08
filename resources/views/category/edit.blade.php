@@ -6,7 +6,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header text-center">
-                        <h3>Create Catergory</h3>
+                        <h3>Edit Catergory</h3>
                     </div>
 
                     <div class="card-body">
