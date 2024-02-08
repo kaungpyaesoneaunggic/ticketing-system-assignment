@@ -25,10 +25,6 @@ class StoreTicketRequest extends FormRequest
     {
         return [
             //
-            'user_id'=>'required',
-            'title'=>'required',
-            'description'=>'required',
-            'agent_id'=>'required'
         ];
     }
 }

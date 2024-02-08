@@ -43,7 +43,6 @@ class TicketPolicy
     public function create(User $user)
     {
         //
-        return $user->role === '0' || ($user->role === '2');
     }
 
     /**

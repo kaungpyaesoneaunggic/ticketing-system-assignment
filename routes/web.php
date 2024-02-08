@@ -28,11 +28,14 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::resource('user', UserController::class);
 Route::resource('category',CategoryController::class);
 Route::resource('label',LabelController::class);
+
+Route::resource('ticket',TicketController::class);
+
 Route::get('/ticket/{id}/comment', [CommentController::class, 'index'])->name('comment.index');
 Route::post('/ticket/{id}/comment', [CommentController::class, 'store'])->name('comment.store');
 Route::delete('/ticket/{id}/comment/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
+Route::put('/ticket/{id}/comment/{comment}', [CommentController::class, 'update'])->name('comment.update');
 
-Route::resource('ticket',TicketController::class);
 
 // Route::get('/create', [DrinkController::class, 'create'])->name('drink.create');
 // Route::post('/', [DrinkController::class, 'store'])->name('drink.store');

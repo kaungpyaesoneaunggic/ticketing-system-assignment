@@ -55,14 +55,14 @@ class TicketController extends Controller
     public function create()
     {
         //
-        try{
-            $this->authorize('create');
+        // try{
+        //     $this->authorize('create');
             $labels = Label::all();
             $categories = Category::all();
             return view('ticket.create', compact('labels', 'categories'));
-        }catch(AuthorizationException $e){
-            return $e;
-        }
+        // }catch(AuthorizationException $e){
+        //     return 'not today Son';
+        // }
         
     }
 

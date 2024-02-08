@@ -86,9 +86,16 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCommentRequest $request, Comment $comment)
+    public function update(UpdateCommentRequest $request,$ticketId,$commentId)
     {
         //
+        $comment = Comment::findOrFail($commentId);
+        if($comment){
+            $comment->comment_body=$request->comment_body;
+            $comment->save();
+            return redirect()->route('comment.index',$ticketId);
+        }
+        return redirect()->route('ticket.index')->with('delete','Error Occured');
     }
 
     /**
