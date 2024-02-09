@@ -30,4 +30,20 @@ class Ticket extends Model
     {
         return $this->hasMany(Comment::class);
     }
+    public static function priorityCounts()
+    {
+        return self::select('priority', \DB::raw('count(*) as count'))
+            ->groupBy('priority')
+            ->pluck('count', 'priority')
+            ->mapWithKeys(function ($count, $priority) {
+                return [ucfirst($priority) => $count];
+            });
+    }
+
+    public static function statusCounts()
+    {
+        return self::select('status', \DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->pluck('count', 'status');
+    }
 }

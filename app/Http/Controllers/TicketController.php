@@ -30,7 +30,7 @@ class TicketController extends Controller
         if ($user->role == 0) {
             $tickets = Ticket::all();
         } else if ($user->role == 1) {
-            $tickets = Ticket::where('agent_id', $user->id)->get();
+            $tickets = Ticket::where('agent_id', $user->id)->orWhere('user_id',$user->id)->get();
         } else {
             $tickets = Ticket::where('user_id',  $user->id)->get();
         }
@@ -124,17 +124,14 @@ class TicketController extends Controller
      */
     public function edit(Ticket $ticket)
     {
-        try {
-            $this->authorize('edit', $ticket);
+            // $this->authorize('edit', $ticket);
             $labels = Label::all();
             $categories = Category::all();
             $agents = User::where('role', '1')->get(); //1 means agent
             $selectedCategoryIds = $ticket->categories->pluck('id')->toArray();
             $selectedLabelIds = $ticket->labels->pluck('id')->toArray();
             return view('ticket.edit', compact('ticket', 'labels', 'categories', 'agents','selectedCategoryIds','selectedLabelIds'));
-        }catch(AuthorizationException $e){
-            return $e;
-        }
+        
     }
 
     /**

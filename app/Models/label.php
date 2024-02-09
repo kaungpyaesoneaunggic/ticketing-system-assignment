@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Label extends Model
 {
     use HasFactory;
+    public function tickets()
+    {
+        return $this->belongsToMany(Ticket::class, 'label_ticket');
+    }
 }

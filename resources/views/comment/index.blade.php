@@ -12,7 +12,6 @@
                             @php
                                 $num = 1;
                             @endphp
-
                             <tr>
                                 <th>#</th>
                                 <th>ID</th>
@@ -33,8 +32,29 @@
                                 <td>{{ $ticket->title }}</td>
                                 <td class="text-truncate">{{ \Illuminate\Support\Str::limit($ticket->description, 30) }}
                                 </td>
-                                <td>{{ $ticket->priority }}</td>
-                                <td>{{ $ticket->status }}</td>
+                                <td >
+                                    <div style="color: white"
+                                    class="btn btn-sm
+                                      @if ($ticket->priority == 'high') btn-danger
+                                      @elseif($ticket->priority == 'medium')
+                                          btn-warning
+                                      @elseif($ticket->priority == 'low')
+                                          btn-info @endif
+                                    "
+                                    >
+                                    {{ $ticket->priority }}
+                                  </div>  
+                                  </td>
+                                  <td>
+                                      <div
+                                          class="btn btn-sm 
+                                        @if ($ticket->status == 'open') btn-success
+                                        @elseif($ticket->status == 'closed')
+                                        btn-primary @endif
+                                       ">
+                                          {{ $ticket->status }}
+                                      </div>
+                                  </td>
                                 <td>
                                     @foreach ($ticketLabelIds as $labelId)
                                         @php
@@ -73,38 +93,58 @@
                         </tbody>
                     </table>
                     <div class="mx-3">
-                        <h4><i class="fas fa-comment text-warning"></i> Comments</h4>
+                        <h4><i class="fas fa-comment text-warning ml-5"></i> Comments</h4>
                         <div class="row text-center d-flex justify-content-between mx-5">
-                        @foreach ($comments as $comment)
-    <div class="col-md-5 m-2 card">
-        <div class="card-container">
-            <div class="card-header">
-                <div class="user-info text-align-center">
-                    <span class="username">{{ $comment->user->name }}</span> | <span class="role">{{ $comment->user->role }}</span>
-                    <span class="float-right d-none d-sm-inline-block">
-                        <button class="btn btn-sm btn-outline-primary edit-comment-btn" data-comment-id="{{ $comment->id }}">
-                            <i class="fa fa-pencil"></i>
-                        </button>
-                        <form id="deleteForm{{ $comment->id }}" action="{{ route('comment.destroy', ['id' => $ticket->id, 'comment' => $comment->id]) }}" method="post" class="d-inline-block">
-                            @method('delete')
-                            @csrf
-                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="confirmDelete('{{ $comment->id }}')"><i class="fa fa-trash"></i></button>
-                        </form>
-                    </span>
-                </div>
-            </div>
-            <div class="comment-body">
-                <p id="comment-body-{{ $comment->id }}" class="comment-text">{{ $comment->comment_body }}</p>
-                <form action="{{ route('comment.update', ['id' => $ticket->id, 'comment' => $comment->id]) }}" method="post" class="edit-comment-form" data-comment-id="{{ $comment->id }}" style="display: none;">
-                    @method('put')
-                    @csrf
-                    <input type="text" name="comment_body" class="form-control" value="{{ $comment->comment_body }}">
-                    <button type="submit" class="btn btn-sm btn-success">Save</button>
-                </form>
-            </div>
-        </div>
-    </div>
-@endforeach
+                            @foreach ($comments as $comment)
+                                <div class="col-md-5 m-2 card">
+                                    <div class="card-container">
+                                        <div class="card-header">
+                                            <div class="user-info text-align-center">
+                                                <span class="username">{{ $comment->user->name }}</span> | <span class="role">
+                                                    @if($comment->user->role == 0)
+                                                        Admin
+                                                    @elseif($comment->user->role == 1)
+                                                        Assigned Agent
+                                                    @elseif($comment->user->role == 2)
+                                                        Ticket Owner
+                                                    @endif
+                                                </span>
+                                                @if (Auth::user()->role=='0'||$comment->user->id==Auth::user()->id)
+                                                <span class="float-right d-none d-sm-inline-block">
+                                                    <button class="btn btn-sm btn-outline-primary edit-comment-btn"
+                                                        data-comment-id="{{ $comment->id }}">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                    <form id="deleteForm{{ $comment->id }}"
+                                                        action="{{ route('comment.destroy', ['id' => $ticket->id, 'comment' => $comment->id]) }}"
+                                                        method="post" class="d-inline-block">
+                                                        @method('delete')
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                                            onclick="confirmDelete('{{ $comment->id }}')"><i
+                                                                class="fa fa-trash"></i></button>
+                                                    </form>
+                                                </span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="comment-body">
+                                            <p id="comment-body-{{ $comment->id }}" class="comment-text">
+                                                {{ $comment->comment_body }}</p>
+                                            <form
+                                                action="{{ route('comment.update', ['id' => $ticket->id, 'comment' => $comment->id]) }}"
+                                                method="post" class="edit-comment-form"
+                                                data-comment-id="{{ $comment->id }}" style="display: none;">
+                                                @method('put')
+                                                @csrf
+                                                <input type="text" name="comment_body" class="form-control"
+                                                    value="{{ $comment->comment_body }}">
+                                                <button type="submit" class="btn btn-sm btn-success">Save</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -141,36 +181,35 @@
                 this.querySelector('.modal').style.display = 'none';
             });
         });
-        document.addEventListener('DOMContentLoaded', function () {
-        const editButtons = document.querySelectorAll('.edit-comment-btn');
-        editButtons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                const commentId = this.getAttribute('data-comment-id');
-                toggleCommentEditMode(commentId);
+
+        // comment edit JS
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButtons = document.querySelectorAll('.edit-comment-btn');
+            editButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const commentId = this.getAttribute('data-comment-id');
+                    toggleCommentEditMode(commentId);
+                });
             });
-        });
 
-        function toggleCommentEditMode(commentId) {
-            const commentParagraph = document.getElementById('comment-body-' + commentId);
-            const editForm = document.querySelector('.edit-comment-form[data-comment-id="' + commentId + '"]');
+            function toggleCommentEditMode(commentId) {
+                const commentParagraph = document.getElementById('comment-body-' + commentId);
+                const editForm = document.querySelector('.edit-comment-form[data-comment-id="' + commentId + '"]');
 
-            // Check if the comment is in edit mode
-            const isInEditMode = commentParagraph.classList.contains('edit-mode');
+                const isInEditMode = commentParagraph.classList.contains('edit-mode');
 
-            if (!isInEditMode) {
-                // Enter edit mode
-                commentParagraph.style.display = 'none';
-                editForm.style.display = 'block';
-            } else {
-                // Exit edit mode
-                commentParagraph.style.display = 'block';
-                editForm.style.display = 'none';
+                if (!isInEditMode) {
+                    commentParagraph.style.display = 'none';
+                    editForm.style.display = 'block';
+                } else {
+                    commentParagraph.style.display = 'block';
+                    editForm.style.display = 'none';
+                }
+
+                // Toggle the edit mode class on the comment paragraph
+                commentParagraph.classList.toggle('edit-mode');
             }
-
-            // Toggle the edit mode class on the comment paragraph
-            commentParagraph.classList.toggle('edit-mode');
-        }
-    });
+        });
     </script>
 @endsection
 

@@ -129,6 +129,8 @@
                                     </a>
                                     <button type="submit" class="btn btn-outline-primary">Submit</button>
                                 </div>
+                                
+                        </form>
                                 @if (Auth::user()->role == 0)
                                     <form id="deleteForm{{ $ticket->id }}" action="{{ route('ticket.destroy', $ticket->id) }}" method="post" class="d-inline-block">
                                         @method('delete')
@@ -137,7 +139,6 @@
                                     </form>
                                 @endif
                             </div>
-                        </form>
                     </div>
                 </div>
             </div>

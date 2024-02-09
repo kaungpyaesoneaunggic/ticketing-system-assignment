@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LabelController;
+use App\Http\Controllers\OverviewController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -24,23 +25,16 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [TicketController::class, 'index'])->name('ticket');
 Route::resource('user', UserController::class);
 Route::resource('category',CategoryController::class);
 Route::resource('label',LabelController::class);
+Route::resource('overview',OverviewController::class);
 
 Route::resource('ticket',TicketController::class);
 
+// Route::resource('ticket/comment',CommentController::class);
 Route::get('/ticket/{id}/comment', [CommentController::class, 'index'])->name('comment.index');
 Route::post('/ticket/{id}/comment', [CommentController::class, 'store'])->name('comment.store');
 Route::delete('/ticket/{id}/comment/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
 Route::put('/ticket/{id}/comment/{comment}', [CommentController::class, 'update'])->name('comment.update');
-
-
-// Route::get('/create', [DrinkController::class, 'create'])->name('drink.create');
-// Route::post('/', [DrinkController::class, 'store'])->name('drink.store');
-// Route::get('/{drink}/edit', [DrinkController::class, 'edit'])->name('drink.edit');
-// Route::put('/{drink}', [DrinkController::class, 'update'])->name('drink.update');
-// Route::get('/{drink}', [DrinkController::class, 'show'])->name('drink.show');
-// Route::delete('/', [DrinkController::class, 'destroy'])->name('drink.destroy');
-// });

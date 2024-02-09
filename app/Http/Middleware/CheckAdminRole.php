@@ -20,6 +20,6 @@ class CheckAdminRole
             return $next($request);
         }
 
-        return redirect()->route('home')->with('error', 'Unauthorized action.');
+        return redirect()->route('ticket')->with('error', 'Unauthorized action.');
     }
 }

@@ -32,7 +32,7 @@
                           $num=1
                         @endphp
                         
-                        <tr>
+                        <tr class="text-center">
                           <th>#</th>
                           <th>ID</th>
                           <th>Name</th>
