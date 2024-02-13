@@ -210,6 +210,23 @@
                 commentParagraph.classList.toggle('edit-mode');
             }
         });
+
+        Echo.channel('comment.' + ticketId)
+    .listen('CommentCreated', (event) => {
+        // Update the UI dynamically to reflect the new comment
+        console.log('New comment:', event.comment);
+        // Add the new comment to the display using Vue, React, or JavaScript DOM manipulation
+    })
+    .listen('CommentUpdated', (event) => {
+        // Update the UI to reflect the edited comment
+        console.log('Updated comment:', event.comment);
+        // Find and update the existing comment element, or apply necessary changes
+    })
+    .listen('CommentDeleted', (event) => {
+        // Remove the comment from the UI
+        console.log('Deleted comment:', event.comment);
+        // Find and remove the relevant comment element using JavaScript
+    });
     </script>
 @endsection
 

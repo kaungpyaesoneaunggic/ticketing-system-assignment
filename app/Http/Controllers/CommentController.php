@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommentCreated;
+use App\Events\CommentViewed;
 use App\Models\Comment;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
@@ -23,6 +25,8 @@ class CommentController extends Controller
         $ticketLabelIds = $ticket->labels->pluck('id')->toArray();
         $ticketImageIds = $ticket->images->pluck('id')->toArray();
         $comments=Comment::where('ticket_id',$id)->get();
+
+        event(new CommentViewed($id, Auth::id()));
         return view('comment.index',compact('ticket','comments','ticketLabelIds','ticketCategoryIds','ticketImageIds'));
     }
 
@@ -52,6 +56,7 @@ class CommentController extends Controller
             $comment->user_id=Auth::user()->id;
             $comment->comment_body=$request->comment_body;
             $comment->save();
+            event(new CommentCreated($id, Auth::id()));
             return redirect()->route('comment.index',$ticket->id);
         }
         return 'error';
@@ -104,15 +109,15 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy($ticketId,$commentId)
-    {
-        //
-        $comment = Comment::findOrFail($commentId);
-        if($comment){
-            $comment->delete();
-            return redirect()->route('comment.index',$ticketId);
-            
+        public function destroy($ticketId,$commentId)
+        {
+            //
+            $comment = Comment::findOrFail($commentId);
+            if($comment){
+                $comment->delete();
+                return redirect()->route('comment.index',$ticketId);
+                
+            }
+            return redirect()->route('ticket.index',$ticketId)->with('delete','Error Occured');
         }
-        return redirect()->route('ticket.index',$ticketId)->with('delete','Error Occured');
-    }
 }
