@@ -1,5 +1,8 @@
 * text=auto
 
+*.php linguist-language=PHP
+*.js linguist-language=JavaScript
+
 *.blade.php diff=php
 *.css diff=css
 *.html diff=html
